@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+ <head>
+ <meta charset="utf-8">
+ <title>打飞机</title>
+ <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+ <script type="text/javascript">
+ $(document).ready(function(e) {
+	//飞机数组
+	var arr_plane = [];
+	//步进
+	var step = 30;
+	var screen_w = $(window).width();
+	var screen_h = $(window).height();
+	//动作标记
+	var active;
+	
+	var plane_x;
+	var plane_y;
+	//飞机数量
+	var plane_count = 5;
+	
+ 
+	var tank_obj = $("#tank");
+	var tank_w= 100;
+	var tank_h = 20;
+	var space_keys = 0;
+	var tank_x = parseInt(tank_obj.css("left")) ;
+	var tank_y = parseInt(tank_obj.css("top")) - tank_h ;
+	tank_obj.css({"width":tank_w,"height":tank_h});
+	
+	/** 
+     * 键盘控制
+    */
+	$(window).keydown(function(event){
+		switch (event.keyCode * 1) {
+			case 37://左 
+				tank_move('left');
+				break;
+			case 38://上 
+				tank_move('up');
+				break;
+			case 39://右 
+				tank_move('right');
+				break;
+			case 40://下 
+				tank_move('down');
+				break;
+			case 32://空格键
+				space_keys++;
+				launch(space_keys);
+				
+			break;
+		}
+		tank_move(active);
+	});
+	
+
+	/**
+	** 移动坦克
+	**/
+	function tank_move(active_method){
+		switch(active_method){
+			//case 'up':
+			//  tank_y -= step;
+			//break;
+			//case 'down':
+			//  tank_y += step;
+			//break;
+			case 'left':
+			  tank_x -= step;
+			break;
+			case 'right':
+			  tank_x += step;
+			break;
+		}
+		$("#info").html("当前坐标：X="+tank_x + " Y="+tank_y + "窗口宽度：w="+screen_w + "窗口高度:"+screen_h + "飞机位置Y:"+plane_y + "飞机宽度范围："+ plane_x  +  "-" + (plane_x+100));
+		check_edge();
+		tank_obj.css({"left":tank_x,"top":tank_y});
+		
+	}
+	
+	/**
+	** 检查边界
+	**/
+	function check_edge(){
+		if(tank_x<0){
+			tank_x += step;
+			return false;
+		}
+		if(tank_x >= screen_w - parseInt(tank_w/2)){
+			return false;
+		}
+		if(tank_y  >= screen_h - parseInt(tank_h/2) -step ){
+			tank_y -= step;
+			return false;
+		}
+	}
+	
+	/**
+	**  发射子弹
+	**/
+	function launch(keys){
+		var len = $(".move").size();
+		if(len>=10){
+			return;
+		}
+		var plane_obj;
+		var bomb_obj = $("<div class='move'></div>"); 
+		$(document.body).append(bomb_obj); 
+		var bomb_x = tank_x + tank_w/2 -10;
+		var bomb_y = tank_y -5;
+		bomb_obj.css("display","block");
+		
+		var arr_mz_plane = [];
+		//移动子弹
+		var t = setInterval(function(){
+			bomb_y -= 10;
+			bomb_obj.css({"top":bomb_y,"left":bomb_x});
+			//锁定最近的飞机
+			for (x in arr_plane){
+				var o = arr_plane[x];
+				if(bomb_y <= 500 && bomb_x >= o.x && bomb_x<= o.x+30){
+					bomb_obj.remove();
+					o.obj.remove();
+					clearInterval(t);
+				}
+			}
+
+			if(bomb_y<=0){
+				bomb_obj.remove();
+				clearInterval(t);
+			}
+			$("#bomb_info").html("子弹信息X="+bomb_x +"Y="+bomb_y);
+		}, 30);
+	}
+	
+	/**
+	**  生成飞机
+	**/
+	function gen_plane(){
+		var plane_len = $(".plane").size();
+		if(plane_len>=plane_count){
+			return ;
+		}
+		var planeobj = $("<div class='plane'></div>"); 
+		$(document.body).append(planeobj.delay(1200));
+		//planeobj.delay("slow").show();
+		
+		var w = get_random(900);
+		planeobj.css({"left":w+10,"top":500});
+		plane_x = w 
+		plane_y = 0;
+		var p_obj = {"obj":planeobj,"x":plane_x,"y":plane_y};
+		arr_plane.push(p_obj);
+		
+	}
+	
+	
+    /**
+	** 获取随机数
+	**/
+	function get_random(n){
+        return Math.floor(Math.random()*n+1)
+    }
+
+    /**
+	** 定时检查飞机是否还有，并生成飞机
+	**/
+	plane_timer = setInterval(function(){
+			gen_plane();
+	}, 100);
+	
+	function sleep(numberMillis) { 
+	   var now = new Date();
+	   var exitTime = now.getTime() + numberMillis;  
+	   while (true) { 
+		   now = new Date(); 
+		   if (now.getTime() > exitTime)    return;
+		}
+	}
+	
+	$("#info").html("当前坐标：X="+tank_x + " Y="+tank_y + "窗口宽度：w="+screen_w + "窗口高度:"+screen_h );
+ });
+ </script>
+ <style type="text/css">
+ body,html{ padding:0; margin:0;}
+ #tank{background:green;position:absolute;left:0;bottom:100px;}
+.plane{background:black;position:absolute;top:0;left:100px;width:30px; height:20px;}
+ #info{background:yellow;position:absolute;left:0;bottom:0;}
+  #bomb_info{background:yellow;position:absolute;left:0;bottom:20px;}
+ .move{background:red;position:absolute;width:10px;height:10px; display:none;top:-99999px;left:-99999px;};
+ </style>
+ </head>
+ <body>
+<div id="tank"></div>
+<div id="info">环境信息</div>
+<div id="bomb_info">子弹</div>
+ </body>
+ </html>
+

@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+ <head>
+ <meta charset="utf-8">
+ <title>绘制圆形</title>
+ <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+ <script type="text/javascript">
+ $(document).ready(function(e) {
+	//角度转弧度 π/180×角度
+	//弧度变角度 180/π×弧度
+     var a = 400; //圆中心的横坐标 
+     var b = 400;  //圆中心的纵坐标
+     var r = 50;  //圆的半径
+     var times = 0; //圆的角度  
+	 //移动物体的大小
+	var move_width = 16;
+	var move_height = 16;
+	 
+	 
+	 //定义计时器
+     var game = setInterval(function flutter() {
+        times += 0.5;
+		co = coordinate(a,b,r,times);
+		//$("#move").css({"left":co.x- parseInt(move_width/2),"top":co.y-parseInt(move_height/2)});
+        $("body").append('<span style="position:absolute; left:'+co.x+'px; top:'+co.y+'px; width:1px; height:1px; background:red;"></span>');
+		$("#tips").text(times);
+         if(parseInt(times) == 360){
+	     //清除计时器
+             clearInterval(game);
+         }
+     }, 1);
+	 
+	 
+
+	 
+	 function coordinate(a,b,r,radis){
+		var co={};
+		//角度转弧度
+        var hudu = (Math.PI / 180)  * radis;  
+		co.x = a - Math.cos(hudu)*r;
+		co.y = b - Math.sin(hudu)*r;
+		return co;
+	 }
+ });
+ </script>
+ <style type="text/css">
+ body,html{ padding:0; margin:0;}
+ #move{background:green;position:absolute;left:0;top:0;}
+ </style>
+ </head>
+ <body>
+ <div id="move"></div>
+ <div style="position:absolute; left:398px; top:398px; width:4px; height:4px; background:#F00;"></div>
+ <div style="position:absolute; left:0; bottom:0">角度：<span id="tips"></span></div>
+ </body>
+ </html>
+

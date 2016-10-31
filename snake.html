@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>贪吃蛇</title>
+        <style>
+            * { margin: 0; padding: 0; }
+            #header { border: 1px solid #000; position: relative; }
+            #box { height: 20px; background: red; display: block; position: absolute; text-align: center; z-index: 9999; }
+            #box li { width: 20px; height: 20px; float: left; display: inline; }
+            .food { width: 10px; height: 10px; position: absolute; text-align: center; background: green; z-index: 0 }
+            .transform_left { transform: rotate(360deg); -ms-transform: rotate(360deg); /* Internet Explorer */ -moz-transform: rotate(360deg); /* Firefox */ -webkit-transform: rotate(-180deg); /* Safari 和 Chrome */ -o-transform: rotate(360deg); /* Opera */ }
+            .transform_up { transform: rotate(90deg); -ms-transform: rotate(90deg); /* Internet Explorer */ -moz-transform: rotate(90deg); /* Firefox */ -webkit-transform: rotate(90deg); /* Safari 和 Chrome */ -o-transform: rotate(90deg); /* Opera */ }
+            .transform_down { transform: rotate(270deg); -ms-transform: rotate(270deg); /* Internet Explorer */ -moz-transform: rotate(270deg); /* Firefox */ -webkit-transform: rotate(270deg); /* Safari 和 Chrome */ -o-transform: rotate(270deg); /* Opera */ }
+            .transform_right { transform: rotate(180deg); -ms-transform: rotate(180deg); /* Internet Explorer */ -moz-transform: rotate(180deg); /* Firefox */ -webkit-transform: rotate(1800deg); /* Safari 和 Chrome */ -o-transform: rotate(180deg); /* Opera */ }
+        </style>
+    </head>
+    <body>
+        <div id="header">
+            <ul id="box">
+                <li>
+                    1
+                </li>
+                <li>
+                </li>
+            </ul>
+        </div>
+        <div id="footer">
+        </div>
+        <script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+        <script>
+
+            var active = 'right';
+            var speed = 20;
+            var pix_x = 20;
+            var pix_y = 20;
+            var screen_x = speed * pix_x;
+            var screen_y = speed * pix_y;
+            var is_true = false;//是否撞击成功 
+            //活动物体 
+            var obj = $("#box");
+            
+            //活动范围初始化 
+            var header = $("#header");
+            var screen_width = screen_x + obj.width();
+            var screen_height = screen_y + obj.height()
+            header.width(screen_width);
+            header.height(screen_height);
+            
+            //食物初始化 
+            food_obj = food();
+            collide(obj, food_obj);
+            //开始做运动 
+            setInterval(beam, 80);
+            
+            
+            /** 
+             * 鼠标点击控制
+             */
+            $(document).click(function(e){
+                var x = e.pageX;
+                var y = e.pageY;
+                if (x > screen_x) {
+                    x = screen_x;
+                }
+                if (y > screen_y) {
+                    y = screen_y;
+                }
+                
+                obj.animate({
+                    left: x,
+                    top: y,
+                }, 'fast');
+            });
+            
+            /** 
+             * 键盘控制
+             */
+            $(window).keydown(function(event){
+                obj.removeClass();
+                switch (event.keyCode * 1) {
+                    case 37://左 
+                        active = 'left';
+                        obj.addClass("transform_left");
+                        break;
+                    case 38://上 
+                        active = 'up';
+                        obj.addClass("transform_up");
+                        break;
+                    case 39://右 
+                        active = 'right';
+                        obj.addClass("transform_right");
+                        break;
+                    case 40://下 
+                        active = 'down';
+                        obj.addClass("transform_down");
+                        break;
+                }
+            });
+            
+            /** 
+             * 生成食物
+             */
+            function food(){
+                //获取随机坐标 
+                var rp = random_postion();
+                $("<div>", {
+                    "text": "1",
+                    "id": "food",
+                    "class": "food",
+                }).appendTo("#header").css({
+                    "top": rp.y,
+                    "left": rp.x
+                });
+                return $("#food");
+            }
+            
+            /** 
+             * 两个物体撞击
+             * @param {Object} $obj_first
+             * @param {Object} $obj_second
+             */
+            function collide($obj_first, $obj_second){
+                //第一个物体的四个角的坐标,第一个物体要大一点 
+                var first_p = four_dot_sit($obj_first);
+                //第二个物体的四个角的坐标 
+                var second_p = four_dot_sit($obj_second);
+                //小体左上角 
+                if (second_p.left_top_x >= first_p.left_top_x &&
+                second_p.left_top_x <= first_p.right_top_x &&
+                second_p.left_top_y >= first_p.left_top_y &&
+                second_p.left_top_y <= first_p.left_bottom_y) {
+                    return true;
+                }
+                //小体右下角 
+                if (second_p.right_bottom_x >= first_p.left_top_x &&
+                second_p.right_bottom_x <= first_p.right_top_x &&
+                second_p.right_bottom_y >= first_p.left_top_y &&
+                second_p.right_bottom_y <= first_p.left_bottom_y) {
+                    return true;
+                }
+            }
+            
+            /** 
+             * 一个物体的四个点的坐标
+             */
+            function four_dot_sit($obj){
+                var width = $obj.width();
+                var height = $obj.height();
+                var p = {};
+                var pt = $obj.position();
+                var x = pt.left;
+                var y = pt.top;
+                //左上角坐标 
+                p.left_top_x = x;
+                p.left_top_y = y;
+                //左下角坐标 
+                p.left_bottom_x = x;
+                p.left_bottom_y = y + height;
+                //右上角坐标 
+                p.right_top_x = x + width;
+                p.right_top_y = y;
+                //右下角坐标 
+                p.right_bottom_x = x + width;
+                p.right_bottom_y = y + height;
+                return p;
+            }
+            
+            /** 
+             * 获取活动范围内的随机坐标
+             */
+            function random_postion(){
+                var p = {};
+                p.x = Math.floor(Math.random() * pix_x) * speed;
+                p.y = Math.floor(Math.random() * pix_y) * speed;
+                return p;
+            }
+            
+            
+            
+            /** 
+             计算该物体到四个方向的距离
+             **/
+            function box_dis(){
+                var w = {};
+                w.left = obj.position().left;
+                w.top = obj.position().top;
+                w.bottom = screen_y - w.top;
+                w.right = screen_x - w.left;
+                return w;
+            }
+            
+            
+            
+            
+            /** 
+             物体移动
+             **/
+            function beam(){
+                box_x = obj.position().left;
+                box_y = obj.position().top;
+                w = box_dis();
+                
+                //检查边界 
+                if (box_x == 0 && box_y == 0 || w.left < speed) {
+                    active = 'right';
+                }
+                if (box_x == screen_x && box_y == 0 || w.top < speed) {
+                    active = 'down';
+                }
+                if (box_x == screen_x && box_y == screen_y || w.right < speed) {
+                    active = 'left';
+                }
+                if (box_x == 0 && box_y == screen_y || w.bottom < speed) {
+                    active = 'up';
+                }
+                
+                //动起来 
+                switch (active) {
+                    case 'left'://左 
+                        obj.css({
+                            "left": box_x - speed
+                        });
+                        break;
+                    case 'up'://上 
+                        obj.css({
+                            "top": box_y - speed
+                        });
+                        break;
+                    case 'right'://右 
+                        obj.css({
+                            "left": box_x + speed
+                        });
+                        break;
+                    case 'down'://下 
+                        obj.css({
+                            "top": box_y + speed
+                        });
+                        break;
+                }
+                var is_true = collide(obj, food_obj);
+                if (is_true) {
+                    var txt = parseInt(food_obj.text());
+                    food_obj.remove();
+                    //重新生成食物 
+                    food_obj = food();
+                    food_obj.text(txt + 1);
+                    is_true = false;
+                }
+                $("#footer").html("方向：" + active + "<br/>距离：left:" + w.left + "top:" + w.top + "bottom:" + w.bottom + "right:" + w.right + "<br/>坐标：x:" + box_x + "y:" + box_y);
+            }
+        </script>
+    </body>
+</html>

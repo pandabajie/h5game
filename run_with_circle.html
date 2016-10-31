@@ -1,0 +1,84 @@
+﻿<!DOCTYPE html>  
+<html>  
+<head>  
+<title>绘制椭圆形</title>  
+<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+<script>
+ $(document).ready(function(e) {
+	
+	var timer;
+	var angle = 0;
+	//移动物体的大小
+	var move_width = 16;
+	var move_height = 16;
+	//坐标对象
+	var co;
+	$("#move").css({"height":move_height,"width":move_width});
+	//初始化轨迹图
+	for(angle;angle<360;angle+=10){
+		co = coordinate(200,200,50,100,angle);
+		$("body").append('<span style="position:absolute; left:'+co.x1+'px; top:'+co.y1+'px; width:1px; height:1px; background:red;"></span>');
+	}
+	angle= 0;
+	var timer = setInterval(function() {
+		 angle += 1;
+		 co = coordinate(200,200,50,100,angle);
+		 $("#move").css({"left":co.x1- parseInt(move_width/2),"top":co.y1-parseInt(move_height/2)});
+		 //$("#tips").text(angle);
+         //if(parseInt(angle) == 360){
+			//清除计时器
+         //    clearInterval(timer);
+         //}
+     }, 1);
+ 
+	 
+	var angle1=0;
+	$("#move1").css({"height":move_height,"width":move_width});
+	var timer1 = setInterval(function() {
+		 angle1 += 0.5;
+		 co1 = coordinate(800,300,200,200,angle1);
+		 $("#move1").css({"left":co1.x1- parseInt(move_width/2),"top":co1.y1-parseInt(move_height/2)});
+         //if(parseInt(angle) == 360){
+			//清除计时器
+         //    clearInterval(timer);
+         //}
+     }, 1);
+	 
+	var angle2=0;
+	$("#move2").css({"height":move_height,"width":move_width});
+	var timer2 = setInterval(function() {
+		 angle2 += 2;
+		 co2 = coordinate(800,500,500,100,angle2);
+		 $("#move2").css({"left":co2.x1- parseInt(move_width/2),"top":co2.y1-parseInt(move_height/2)});
+         //if(parseInt(angle) == 360){
+			//清除计时器
+         //    clearInterval(timer);
+         //}
+     }, 1);
+	 
+	 
+	 //获取椭圆形的坐标位置
+	 function coordinate(x,y,a,b,radis){
+	    var co={};
+		hudu=(Math.PI/180)*radis;
+		co.x1 = a * Math.sin(hudu) + x;
+		co.y1 = y + (b*Math.cos(hudu));
+		return co;
+	 }
+ });
+</script>
+ <style type="text/css">
+ body,html{ padding:0; margin:0;}
+ #move{background:green;position:absolute;}
+ #move1{background:red;position:absolute;}
+#move2{background:blue;position:absolute;}
+ </style>
+</head>  
+<body>  
+<div id="move"></div>
+<div id="move1"></div>
+<div id="move2"></div>
+<div style="position:absolute; left:0; bottom:0">角度：<span id="tips"></span></div>
+</body>  
+</html> 
+
