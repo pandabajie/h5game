@@ -1,0 +1,242 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>平滑画线效果</title>
+</head>
+<body>
+<style>
+    body {
+        background-color: ivory;
+        margin: 0;
+        padding: 50px 0 0 0 ;
+        background-color: #00bb00;
+    }
+    canvas {
+
+    }
+</style>
+<canvas id="canvas" width="1900" height="510"></canvas>
+<script>
+    (function () {
+        var lastTime = 0;
+        var vendors = ['ms', 'moz', 'webkit', 'o'];
+        for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+            window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+            window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+        }
+
+        if (!window.requestAnimationFrame) window.requestAnimationFrame = function (callback, element) {
+            var currTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+            var id = window.setTimeout(function () {
+                    callback(currTime + timeToCall);
+                },
+                timeToCall);
+            lastTime = currTime + timeToCall;
+            return id;
+        };
+
+        if (!window.cancelAnimationFrame) window.cancelAnimationFrame = function (id) {
+            clearTimeout(id);
+        };
+    }());
+
+
+    var canvas = document.getElementById("canvas");
+    var ctx = canvas.getContext("2d");
+    ctx.lineCap = "round";
+
+    // variable to hold how many frames have elapsed in the animation
+    var t = 1;
+
+    // define the path to plot
+    var vertices = [];
+    vertices.push({
+        x: 0,
+        y:502
+    });
+    vertices.push({
+        x: 140,
+        y: 477
+    });
+    vertices.push({
+        x: 216,
+        y: 436
+    });
+    vertices.push({
+        x: 305,
+        y: 436
+    });
+    vertices.push({
+        x: 384,
+        y: 396
+    });
+    vertices.push({
+        x: 482,
+        y: 385
+    });
+    vertices.push({
+        x: 563,
+        y: 338
+    });
+    vertices.push({
+        x: 678,
+        y: 329
+    });
+    vertices.push({
+        x: 755,
+        y: 286
+    });
+    vertices.push({
+        x: 755,
+        y: 286
+    });
+    vertices.push({
+        x: 880,
+        y: 286
+    });
+    vertices.push({
+        x: 980,
+        y: 235
+    });
+    vertices.push({
+        x: 1110,
+        y: 235
+    });
+    vertices.push({
+        x: 1184,
+        y: 187
+    });
+    vertices.push({
+        x: 1350,
+        y: 160
+    });
+    vertices.push({
+        x: 1424,
+        y: 120
+    });
+    vertices.push({
+        x: 1616,
+        y: 122
+    });
+    vertices.push({
+        x: 1670,
+        y: 41
+    });
+    vertices.push({
+        x: 1850,
+        y: 20
+    });
+    vertices.push({
+        x: 1850,
+        y: 20
+    });
+    vertices.push({
+        x: 1900,
+        y: 45
+    });
+    // draw the complete line
+//    ctx.lineWidth = 1;
+//    // tell canvas you are beginning a new path
+//    ctx.beginPath();
+//    // draw the path with moveTo and multiple lineTo's
+//    ctx.moveTo(0, 0);
+//    ctx.lineTo(300, 100);
+//    ctx.lineTo(80, 200);
+//    ctx.lineTo(10, 100);
+//    ctx.lineTo(0, 0);
+//    // stroke the path
+//    ctx.stroke();
+
+
+    // set some style
+    ctx.lineWidth = 20;
+    ctx.strokeStyle = "blue";
+    // calculate incremental points along the path
+    var points = calcWaypoints(vertices);
+    // extend the line from start to finish with animation
+    animate(points);
+
+
+    // calc waypoints traveling along vertices
+    function calcWaypoints(vertices) {
+        var waypoints = [];
+        for (var i = 1; i < vertices.length; i++) {
+            var pt0 = vertices[i - 1];
+            var pt1 = vertices[i];
+            var dx = pt1.x - pt0.x;
+            var dy = pt1.y - pt0.y;
+            for (var j = 0; j < 10; j++) {
+                var x = pt0.x + dx * j / 10;
+                var y = pt0.y + dy * j / 10;
+                waypoints.push({
+                    x: x,
+                    y: y
+                });
+            }
+        }
+        return (waypoints);
+    }
+
+
+    function animate() {
+        if (t < points.length - 1) {
+            requestAnimationFrame(animate);
+        }
+        // draw a line segment from the last waypoint
+        // to the current waypoint
+        ctx.beginPath();
+        ctx.moveTo(points[t - 1].x, points[t - 1].y);
+        if(points[t].x <1424  || points[t].x >1616 ){
+            ctx.lineTo(points[t].x, points[t].y);
+        }
+        ctx.stroke();
+        // increment "t" to get the next waypoint
+        t++;
+    }
+
+
+
+
+
+
+
+
+
+
+//    var canva = document.getElementById('canva'),
+//        ctx = canva.getContext('2d');
+//
+//    var Point = function (x, y) {
+//        this.startX = x;
+//        this.startY = y;
+//    };
+//    var points = [new Point(1, 2),
+//        new Point(10, 20),
+//        new Point(30, 30),
+//        new Point(40, 80),
+//        new Point(100, 100),
+//        new Point(120, 100)];
+//
+//    //goto first point
+//    ctx.strokeStyle = "black";
+//    ctx.moveTo(points[0].startX, points[0].startY);
+//
+//    var counter = 1,
+//        inter = setInterval(function() {
+//            //create interval, it will
+//            //iterate over pointes and when counter > length
+//            //will destroy itself
+//            var point = points[counter++];
+//            ctx.lineTo(point.startX, point.startY);
+//            ctx.stroke();
+//            if (counter >= points.length) {
+//                clearInterval(inter);
+//            }
+//            console.log(counter);
+//        }, 500);
+//    ctx.stroke();
+</script>
+</body>
+</html>
+
