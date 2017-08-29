@@ -157,18 +157,20 @@
     // extend the line from start to finish with animation
     animate(points);
 
+	
 
     // calc waypoints traveling along vertices
     function calcWaypoints(vertices) {
+	    var speed = 5;
         var waypoints = [];
         for (var i = 1; i < vertices.length; i++) {
             var pt0 = vertices[i - 1];
             var pt1 = vertices[i];
             var dx = pt1.x - pt0.x;
             var dy = pt1.y - pt0.y;
-            for (var j = 0; j < 10; j++) {
-                var x = pt0.x + dx * j / 10;
-                var y = pt0.y + dy * j / 10;
+            for (var j = 0; j < speed; j++) {
+                var x = pt0.x + dx * j / speed;
+                var y = pt0.y + dy * j / speed;
                 waypoints.push({
                     x: x,
                     y: y
