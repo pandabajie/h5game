@@ -4,7 +4,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
-<title>微资源</title>
+<title>时光机</title>
 <!--jQuery-->
 <script type="text/javascript" src="js/createjs.min.js"></script>
 <script type="text/javascript" src="js/zepto.min.js"></script>
@@ -35,8 +35,8 @@
 		window.shareData = {
 		        "imgUrl": "http://game2.id87.com/games/dqe/img/icon.png",
 		        "timeLineLink": "http://game2.id87.com/games/dqe",
-		        "tTitle": "打企鹅-微资源",
-		        "tContent": "打企鹅-微资源"
+		        "tTitle": "打企鹅-时光机",
+		        "tContent": "打企鹅-时光机"
 		};
 				
 		function goHome(){
@@ -107,7 +107,7 @@
 			function onShareComplete(res) {
                 if (localStorage.myuid && myData.score != undefined) {
                     setTimeout(function(){
-                        if (confirm("要将成绩提交到微资源排行榜吗？")) {
+                        if (confirm("要将成绩提交到时光机排行榜吗？")) {
                             window.location = "http://game2.id87.com/games/dqe/index.html?gameid=" + myData.gameid + "&uid=" + localStorage.myuid + "&score=" + myData.score + "&scorename=" + encodeURIComponent(myData.scoreName);
                         }
                         else {
