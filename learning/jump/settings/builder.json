@@ -1,0 +1,32 @@
+{
+  "appKey": "",
+  "appSecret": "",
+  "encryptJs": true,
+  "excludeScenes": [],
+  "includeAnySDK": false,
+  "includeSDKBox": false,
+  "inlineSpriteFrames": true,
+  "inlineSpriteFrames_native": true,
+  "jailbreakPlatform": false,
+  "md5Cache": true,
+  "mergeStartScene": false,
+  "oauthLoginServer": "",
+  "optimizeHotUpdate": false,
+  "orientation": {
+    "landscapeLeft": true,
+    "landscapeRight": true,
+    "portrait": false,
+    "upsideDown": false
+  },
+  "packageName": "org.cocos2d.jump",
+  "privateKey": "",
+  "renderMode": "0",
+  "startScene": "f052c3be-22fe-4d57-9740-cb9e391d9eae",
+  "title": "jump",
+  "webOrientation": "portrait",
+  "xxteaKey": "1d413dab-b87a-4f",
+  "wechatgame": {
+    "appid": "",
+    "orientation": "portrait"
+  }
+}
